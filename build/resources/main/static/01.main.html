@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Spotlink - 메인</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff3ec;
+    }
+
+    .background {
+      background: url('images/home_wallpaper.jpg') no-repeat center center/cover;
+      height: 100vh;
+      position: relative;
+    }
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.4);
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    nav {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      padding: 20px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fff3ec;
+      font-size: 1.2rem;
+      font-weight: 500;
+      z-index: 2;
+      flex-wrap: wrap;
+    }
+
+    .menu-left, .menu-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .menu-left {
+      margin-left: 32px; /* ← 왼쪽 여백만 주기 */
+    }
+
+    .menu-right {
+      margin-left: auto;
+      margin-right: 32px; /* → 오른쪽 끝으로 밀어주고 여백 줌 */
+    }
+
+    .main-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: white;
+      z-index: 2;
+      padding: 0 16px;
+    }
+
+    .main-text h1 {
+      font-size: clamp(24px, 5vw, 50px);
+      margin-bottom: 16px;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+    }
+
+    .main-text p {
+      font-size: clamp(14px, 2.5vw, 20px);
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+
+    a {
+      color: #333;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .menu-left, .menu-right {
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <div class="overlay"></div>
+    <nav>
+      <div class="menu-left">
+        <a href="#">아카이브</a>
+        <a href="#">조직 구성</a>
+        <a href="#">게시판</a>
+      </div>
+      <div class="menu-right">
+        <a href="login.html">로그인</a>
+        <a href="signup.html">회원가입</a>
+      </div>
+    </nav>
+    <div class="main-text">
+      <h1>우리만의 특별한 지도를 그려요</h1>
+      <p>매일의 작은 발견들, 함께 나누면 더욱 특별해져요</p>
+    </div>
+  </div>
+</body>
+</html>
+<script>
+  const name = localStorage.getItem("userName");
+  if (name) {
+    document.getElementById("welcomeText").innerText = `${name}님, 환영합니다!`;
+  }
+</script>
+
