@@ -2,8 +2,10 @@ name: Terraform S3 Deploy
 
 on:
   push:
+    branches: [ "main" ]
     paths:
-      - '**.tf'
+      - 'terraform/**'
+      - '.github/workflows/terraform.yml'
 
 jobs:
   terraform:
@@ -26,9 +28,9 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: 🚀 Terraform Init
-        run: terraform init
         working-directory: terraform
+        run: terraform init
 
       - name: ☁️ Terraform Apply
-        run: terraform apply -auto-approve
         working-directory: terraform
+        run: terraform apply -auto-approve
