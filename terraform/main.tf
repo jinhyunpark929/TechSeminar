@@ -5,7 +5,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "ts_bucket" {
-  bucket = "ts-demo-bucket-${random_id.suffix.hex}"
+  bucket = "tech-seminar-bucket-${random_id.suffix.hex}"
   force_destroy = true
 }
 
