@@ -25,7 +25,7 @@ jobs:
         run: docker build -t jamie929/spotlink:github-2.0 .
 
       - name: 🔐 DockerHub 로그인
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: ☁️ DockerHub 푸시
         run: docker push jamie929/spotlink:github-2.0
