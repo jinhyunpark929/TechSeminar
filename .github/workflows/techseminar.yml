@@ -11,7 +11,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4.1.0
     - name: echo message
-      run: echo "✅ Gradle 빌드 시작 (테스트 생략)"
+      run: echo "📥 GitHub에서 소스코드 clone 중..."
     - name: sh
       shell: bash
       run: rm -rf spotlink && git clone -b main https://github.com/jinhyunpark929/The-era-of-github-actions.git spotlink
@@ -23,7 +23,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4.1.0
     - name: echo message
-      run: "echo â\x9C\N Gradle ë¹\x8Cë\x93\x9C ì\x8B\x9Cì\x9E\x91 (í\N\x8Cì\x8A¤í\x8A¸ ì\x83\x9Dë\x9Eµ)"
+      run: "✅ Gradle 빌드 시작 (테스트 생략)"
     - name: sh
       shell: bash
       run: "./gradlew clean build -x test"
@@ -36,7 +36,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4.1.0
     - name: echo message
-      run: "echo ð\x9F\x90³ Docker ì\x9D´ë¯¸ì§\x80 ë¹\x8Cë\x93\x9C ì¤\x91..."
+      run: "🐳 Docker 이미지 빌드 중..."
     - name: sh
       shell: bash
       run: docker build -t $IMAGE_NAME .
@@ -50,7 +50,10 @@ jobs:
       uses: actions/checkout@v4.1.0
     - name: sh
       shell: bash
-      run: "echo \"ð\x9F\x94\x90 DockerHub ë¡\x9Cê·¸ì\x9D¸ ì¤\x91...\"\necho \"$DOCKERHUB_PASSWORD\" | docker login -u \"$DOCKERHUB_USERNAME\" --password-stdin\ndocker push $IMAGE_NAME"
+      run: |
+            echo "🔐 DockerHub 로그인 중..."
+            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker push $IMAGE_NAME
       env:
-        DOCKERHUB_USERNAME: "${{ secrets.DOCKERHUB_CREDS_DOCKERHUB_USERNAME }}"
-        DOCKERHUB_PASSWORD: "${{ secrets.DOCKERHUB_CREDS_DOCKERHUB_PASSWORD }}"
+        DOCKERHUB_USERNAME: "${{ secrets.DOCKERHUB_USERNAME }}"
+        DOCKERHUB_PASSWORD: "${{ secrets.DOCKERHUB_PASSWORD }}"
