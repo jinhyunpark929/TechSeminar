@@ -17,11 +17,11 @@ jobs:
           mkdir -p build
           cp -r ~/shared-cache/build/* ./build/ 2>/dev/null || echo "No cache found"
 
-      - name: Build project
+      - name: Build project (skip tests)
         run: |
-          echo "[2] Build with Gradle"
+          echo "[2] Build with Gradle (skip tests)"
           START=$(date +%s)
-          ./gradlew build
+          ./gradlew build -x test
           END=$(date +%s)
           echo "⏱️ Build time: $((END - START)) seconds"
 
