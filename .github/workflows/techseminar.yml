@@ -23,7 +23,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4.1.0
     - name: echo message
-      run: "✅ Gradle 빌드 시작 (테스트 생략)"
+      run: echo "✅ Gradle 빌드 시작 (테스트 생략)"
     - name: sh
       shell: bash
       run: "./gradlew clean build -x test"
@@ -36,7 +36,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4.1.0
     - name: echo message
-      run: "🐳 Docker 이미지 빌드 중..."
+      run: echo "🐳 Docker 이미지 빌드 중..."
     - name: sh
       shell: bash
       run: docker build -t $IMAGE_NAME .
