@@ -11,7 +11,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v4.1.0
     - name: echo message
-      run: "echo ð\x9F\x93¥ GitHubì\x97\x90ì\x84\x9C ì\x86\x8Cì\x8A¤ì½\x94ë\x93\x9C clone ì¤\x91..."
+      run: echo "✅ Gradle 빌드 시작 (테스트 생략)"
     - name: sh
       shell: bash
       run: rm -rf spotlink && git clone -b main https://github.com/jinhyunpark929/The-era-of-github-actions.git spotlink
