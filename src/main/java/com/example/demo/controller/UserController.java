@@ -24,9 +24,9 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
         User user = new User();
-        user.setUsername(request.getUsername()); // ✅ username으로 수정
+        user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword()); // 실제론 암호화해야 함
+        user.setPassword(request.getPassword());
         userRepository.save(user);
         return ResponseEntity.ok("회원가입 성공");
     }
