@@ -1,0 +1,32 @@
+name: Spring Boot Build with Custom Cache
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Restore build cache
+        run: |
+          echo "[1] Restore build cache..."
+          mkdir -p build
+          cp -r ~/shared-cache/build/* ./build/ 2>/dev/null || echo "No cache found"
+
+      - name: Build project
+        run: |
+          echo "[2] Build with Gradle"
+          START=$(date +%s)
+          ./gradlew build
+          END=$(date +%s)
+          echo "⏱️ Build time: $((END - START)) seconds"
+
+      - name: Save build cache
+        run: |
+          echo "[3] Save cache"
+          mkdir -p ~/shared-cache/build
+          cp -r ./build/* ~/shared-cache/build/
