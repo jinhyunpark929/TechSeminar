@@ -1,0 +1,52 @@
+{
+  "flow-definition": {
+    "plugin": "workflow-job@1508.v9cb_c3a_a_89dfd",
+    "actions": [
+      {
+        "org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction": {
+          "plugin": "pipeline-model-definition@2.2254.v2a_978de46f35"
+        }
+      },
+      {
+        "org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction": {
+          "plugin": "pipeline-model-definition@2.2254.v2a_978de46f35",
+          "jobProperties": null,
+          "triggers": null,
+          "parameters": null,
+          "options": null
+        }
+      }
+    ],
+    "description": null,
+    "keepDependencies": "false",
+    "properties": [
+      {
+        "com.coravy.hudson.plugins.github.GithubProjectProperty": {
+          "plugin": "github@1.43.0",
+          "projectUrl": "REDACTED://github.com/jinhyunpark929/The-era-of-github-actions.git/",
+          "displayName": null
+        }
+      },
+      {
+        "org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty": {
+          "triggers": [
+            {
+              "com.cloudbees.jenkins.GitHubPushTrigger": {
+                "plugin": "github@1.43.0",
+                "spec": null
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "definition": {
+      "class": "org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition",
+      "plugin": "workflow-cps@4080.va_15b_44a_91525",
+      "script": "pipeline {\n  agent any\n\n  environment {\n    IMAGE_NAME = 'jamie929/spotlink:jenkins-1.0'\n  }\n\n  stages {\n    stage('Git Checkout') {\n      steps {\n        echo '📥 GitHub에서 소스코드 clone 중...'\n        sh 'rm -rf spotlink && git clone -b main REDACTED://github.com/jinhyunpark929/The-era-of-github-actions.git spotlink'\n      }\n    }\n\n    stage('Gradle Build') {\n      steps {\n        echo '✅ Gradle 빌드 시작 (테스트 생략)'\n        dir('spotlink') {\n          sh './gradlew clean build -x test'\n        }\n      }\n    }\n\n    stage('Docker Build') {\n      steps {\n        echo '🐳 Docker 이미지 빌드 중...'\n        dir('spotlink') {\n          sh 'docker build -t $IMAGE_NAME .'\n        }\n      }\n    }\n\n    stage('Docker Login & Push') {\n      steps {\n        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {\n          sh '''\n            echo \"🔐 DockerHub 로그인 중...\"\n            echo \"$DOCKERHUB_PASSWORD\" | docker login -u \"$DOCKERHUB_USERNAME\" --password-stdin\n            docker push $IMAGE_NAME\n          '''\n        }\n      }\n    }\n  }\n}\n\n",
+      "sandbox": "true"
+    },
+    "triggers": null,
+    "disabled": "false"
+  }
+}

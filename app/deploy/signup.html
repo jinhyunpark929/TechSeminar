@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Spotlink - 회원가입</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff;
+      display: flex;
+      height: 100vh;
+    }
+
+    .form-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0 2vw /* 🔥 여기! 오른쪽 여백 줄이기 */
+    }
+    
+    form {
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .form-section h1 {
+      font-size: 24px;
+      margin-bottom: 32px;
+    }
+
+    input[type="text"], input[type="password"], input[type="email"] {
+      width: 100%;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .checkbox {
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #fcae89;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #f99367;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 24px 0;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .social-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .social-buttons button {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background-color: white;
+      color: black; /* ← 글자 보이게 색상 추가 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .login-link {
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .login-link a {
+      color: #f99367;
+      text-decoration: none;
+    }
+
+    .right-panel {
+      flex: 1.4;
+      background-color: #fac3a1;
+      border-top-left-radius: 40px;
+      border-bottom-left-radius: 40px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .right-panel {
+        display: none;
+      }
+
+      .form-section {
+        align-items: center;
+        padding: 40px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-section">
+    <h1>우리만의 공간에 온 걸 환영해요! ✨</h1>
+    <form id="signupForm">
+      <label for="username">이름</label>
+      <input type="text" name="username" placeholder="Enter your name" required>
+
+      <label for="email">이메일</label>
+      <input type="email" name="email" placeholder="Enter your email" required>
+
+      <label for="password">비밀번호</label>
+      <input type="password" name="password" placeholder="Enter your password" required>
+
+      <div class="checkbox">
+        <input type="checkbox" id="agree"> 약관 및 개인정보 처리 방침 동의
+      </div>
+
+      <button type="submit">회원 가입 완료</button>
+
+      <div class="divider">or</div>
+
+      <div class="social-buttons">
+        <button>
+          <img src="images/logo_google.png" alt="Google" style="height: 18px; vertical-align: middle; margin-right: 8px;">
+          Sign in with Google
+        </button>
+        <button>
+          <img src="images/logo_apple.png" alt="Apple" style="height: 20px; vertical-align: middle; margin-right: 8px;">
+          Sign in with Apple
+        </button>
+      </div>
+
+      <div class="login-link">
+        이미 계정이 있으신가요? <a href="03.login.html">로그인</a>
+      </div>
+    </form>
+  </div>
+  <div class="right-panel"></div>
+
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = {
+        username: formData.get('username'),
+        password: formData.get('password'),
+        email: formData.get('email')
+      };
+
+      const response = await fetch('http://localhost:8080/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        alert('회원가입 성공!');
+      } else {
+        alert('회원가입 실패');
+      }
+    });
+  </script>
+</body>
+</html>
