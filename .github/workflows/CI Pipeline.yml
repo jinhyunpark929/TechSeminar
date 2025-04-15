@@ -1,19 +1,23 @@
 name: "CI Pipeline: Backend to DockerHub"
 
+# 🔁 main 브랜치에 push 이벤트가 발생할 때 워크플로우 실행
 on:
   push:
     branches: [ main ]
 
 jobs:
   build-and-push:
+    # 🖥️ GitHub에서 제공하는 최신 우분투 환경에서 실행
     runs-on: ubuntu-latest
 
     steps:
+      # ✅ GitHub 레포지토리의 소스 코드를 체크아웃
       - name: ✅ Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
+      # ♻️ Gradle 의존성 캐싱 (빌드 시간 단축)
       - name: ♻️ Cache Gradle packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4.2.3
         with:
           path: |
             ~/.gradle/caches
@@ -22,12 +26,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      # 🔨 Gradle 빌드 실행 (테스트 제외)
       - name: 🔨 Gradle build (skip tests)
         run: ./gradlew clean build -x test
 
+      # 🐳 Docker Buildx 세팅 (멀티 플랫폼 이미지 빌드 가능)
       - name: 🐳 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # 🏷️ 이미지 태그 자동 생성 (브랜치명-날짜-SHA)
       - name: 🏷️ Set dynamic Docker tags
         id: meta
         run: |
@@ -36,12 +43,14 @@ jobs:
           BRANCH=$(echo ${GITHUB_REF##*/})
           echo "IMAGE_TAG=${BRANCH}-${DATE}-${SHORT_SHA}" >> $GITHUB_ENV
 
+      # 🔐 DockerHub 로그인 (시크릿 값 사용)
       - name: 🔐 Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      # ☁️ Docker 이미지 빌드 및 DockerHub에 푸시
       - name: ☁️ Build and Push Docker image
         uses: docker/build-push-action@v6.15.0
         with:
@@ -50,3 +59,19 @@ jobs:
           tags: |
             jamie929/spotlink:${{ env.IMAGE_TAG }}
             jamie929/spotlink:latest
+
+      # ✅ 빌드 성공 시 Slack으로 알림 전송
+      - name: ✅ Slack 알림 (성공)
+        if: success()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"✅ GitHub Actions 빌드 성공! 🎉 by Spotlink"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      # ❌ 빌드 실패 시 Slack으로 알림 전송
+      - name: ❌ Slack 알림 (실패)
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"❌ GitHub Actions 빌드 실패! 확인이 필요합니다."}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
