@@ -28,6 +28,7 @@ jobs:
 
       # 🔨 Gradle 빌드 실행 (테스트 제외)
       - name: 🔨 Gradle build (skip tests)
+        working-directory: app
         run: ./gradlew clean build -x test
 
       # 🐳 Docker Buildx 세팅 (멀티 플랫폼 이미지 빌드 가능)
@@ -54,7 +55,7 @@ jobs:
       - name: ☁️ Build and Push Docker image
         uses: docker/build-push-action@v6.15.0
         with:
-          context: .
+          context: ./app
           push: true
           tags: |
             jamie929/spotlink:${{ env.IMAGE_TAG }}
