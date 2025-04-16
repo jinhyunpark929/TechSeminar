@@ -1,5 +1,6 @@
-name: "CI Pipeline: Backend to DockerHub"
+name: "CI Pipeline: BE to Hub"
 
+#
 on:
   push:
     branches: [ main ]
@@ -14,10 +15,10 @@ jobs:
 
     steps:
       - name: ✅ Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
       - name: ♻️ Cache Gradle packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4.2.3
         with:
           path: |
             ~/.gradle/caches
@@ -29,17 +30,26 @@ jobs:
       - name: 🔨 Gradle build (skip tests)
         run: ./gradlew clean build -x test
 
+      - name: 📦 Upload JAR artifact
+        uses: actions/upload-artifact@v4.2.3
+        with:
+          name: app-jar
+          path: app/build/libs/*.jar
+
   docker:
     name: 🐳 Docker Build & Push
-    needs: build
+    needs: build  # build job이 성공해야 docker job 실행
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
 
     steps:
       - name: ✅ Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
+
+      - name: 📥 Download JAR artifact
+        uses: actions/download-artifact@v4.2.1
+        with:
+          name: app-jar
+          path: .
 
       - name: 🏷️ Set dynamic Docker tags
         id: meta
@@ -58,8 +68,23 @@ jobs:
       - name: ☁️ Build and Push Docker image
         uses: docker/build-push-action@v6.15.0
         with:
-          context: ./app
+          context: .
           push: true
           tags: |
             jamie929/spotlink:${{ env.IMAGE_TAG }}
             jamie929/spotlink:latest
+          file: ./app/Dockerfile
+
+      - name: ✅ Slack 알림 (성공)
+        if: success()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"✅ GitHub Actions 빌드 성공! 🎉 by Spotlink"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: ❌ Slack 알림 (실패)
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"❌ GitHub Actions 빌드 실패! 확인이 필요합니다."}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
