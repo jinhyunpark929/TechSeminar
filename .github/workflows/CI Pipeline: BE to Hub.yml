@@ -31,7 +31,7 @@ jobs:
         run: ./gradlew clean build -x test
 
       - name: 📦 Upload JAR artifact
-        uses: actions/upload-artifact@v4.2.3
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: app-jar
           path: app/build/libs/*.jar
